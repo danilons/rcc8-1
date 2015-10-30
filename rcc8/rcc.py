@@ -57,7 +57,17 @@ class RCC8(object):
                 fusion = np.bitwise_or(img1, img2)
 
                 # check overlapping
-                nobjects = nms.count_objects(fusion, 255)
+                nobjects = []
+                try:
+                    nobjects = nms.count_objects(fusion, 255)
+                except:
+                    # RCC8: EQ (Equal)
+                    rcc_labels[0, 3] = 1
+                    label = annotations[0]
+                    rcc_names.append((classes[label], classes[label], self.RELATIONS[3]))
+                    boxes.append((box1, box2))
+                    continue
+
                 if len(nobjects) == 2:
                     # RCC8: EQ (Disconnected)
                     rcc_labels[0, 0] += 1
